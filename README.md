@@ -8,9 +8,9 @@ You can run either normal (single-threaded) or parallel MEEP from either a Jupyt
 
 Run the following command: 
 '''
-sudo docker run -i -t -p 8888:8888 --mount type=bind,src=<notebook directory>,dst=/home/host theogdoctorg/conda-meep 
+sudo docker run -i -t -p 8888:8888 --mount type=bind,src=<directory>,dst=/home/host theogdoctorg/conda-meep 
 '''
-
+where <directory> is the path to the folder you would like to have accessible in Meep/Conda. Be aware that a "/notebooks/" folder will be created in this directory to contain the Jupyter notebooks.
 
 ## Building a new Docker image
 Using git, clone the repo to a local folder
