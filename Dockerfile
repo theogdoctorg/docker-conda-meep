@@ -6,17 +6,20 @@ LABEL maintainer="theogdoctorg"
 
 RUN apt-get update
 RUN apt-get upgrade -y
+RUN apt-get install xvfb -y
+# purpose of xvfb is to fix OpenGL not having a "display" on Jupyter notebooks
 
 # set up Conda environments first so they are cached if scripts need to change later 
 
 # conda install steps taken from: https://meep.readthedocs.io/en/latest/Installation/ 
-#RUN conda create --name mp -c conda-forge --file /home/general/condameep_req.txt -y 
-ENV common_pkgs="matplotlib spyder jupyter numpy scipy vispy"
+ 
+ENV common_pkgs="matplotlib spyder jupyter numpy scipy vispy jupyter-rfb"
+# purpose of jupyter-rfb is to work as a bakend for vispy in notebooks
+
 RUN conda create --name mp -c conda-forge $common_pkgs pymeep pymeep-extras -y
-# .... seems to work better when run in one line
+# .... seems to work better when run in one line than doing another "install" call
 #RUN conda install -n mp -c conda-forge pymeep pymeep-extras -y
 
-# RUN conda create --name pmp -c conda-forge --file /home/general/condameep_req.txt -y
 RUN conda create -n pmp -c conda-forge $common_pkgs ipyparallel pymeep=*=mpi_mpich_* -y
 
 # note: must be careful about running future "conda activate" commands, preceed cmd with:
@@ -25,11 +28,10 @@ RUN conda create -n pmp -c conda-forge $common_pkgs ipyparallel pymeep=*=mpi_mpi
 
 # let Docker Desktop know Jupyter wants a port
 EXPOSE 8888/tcp
-
 # give the user a directory that is exposed to the host
 RUN mkdir /home/host
 VOLUME /home/host
-#WORKDIR /home/
+#WORKDIR /home/ 
 
 # set up selection menu
 RUN mkdir /home/scripts
