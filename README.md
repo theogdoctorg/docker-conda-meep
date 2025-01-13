@@ -7,10 +7,9 @@ https://github.com/theogdoctorg/docker-meep-and-mpb
 
 In order to keep the image size small, this image is not intended to be an ML/AI learning environment 
 
-## Installation
+## (Docker) Installation
 ### Ubuntu
 First install Docker, either via the Ubuntu App center or the (Docker recommended) installation instructions here:
-
 https://docs.docker.com/engine/install/ubuntu/
 
 ### Windows (10 or 11)
@@ -20,10 +19,15 @@ https://docs.microsoft.com/en-us/windows/wsl/install-win10
 Then install Docker, making sure to use the WSL option, following the instructions here:
 https://docs.docker.com/desktop/setup/install/windows-install/
 
+### Mac OS
+Only tested on an Intel Mac so far. If you have an Apple Silicon Mac, please let me know the results!
+Install Docker:
+https://docs.docker.com/desktop/setup/install/mac-install/
+
 ## Usage
 You can run either normal (single-threaded) or parallel MEEP from either a Jupyter notebook environment or the Spyder IDE. These are available via selection menu at runtime.
 
-Run the following command: (may need to preceed with "sudo" on Linux)
+Run the following command: (may need to preceed with "sudo" on Linux or Mac)
  
 ```
 docker run -i -t -p 8888:8888 --mount type=bind,src=<directory>,dst=/home/host theogdoctorg/conda-meep 
@@ -32,6 +36,25 @@ docker run -i -t -p 8888:8888 --mount type=bind,src=<directory>,dst=/home/host t
 where <directory> is the path to the folder you would like to have accessible in Meep/Conda. Be aware that if either of the Jupyter run options is selected and a "/notebooks/" folder does not exist in this directory, one will be created by the script.
 
 Since Docker runs as a root user, the folders & files created in the mounted directory may need to have permissions modified (chown or chmod in Linux) in order to be later moved/edited/copied by a non-root user.
+
+If using one of the Jupyter options, a link with the appropriate token should appear on the terminal. Copy and paste into a browser window to access Jupyter, create a notebook, start trying out Meep.
+
+If using one of the Spyder options, X11 forwading will need to be set up. On Ubuntu, this means allowing it via shell command:
+
+```
+xhost +
+```
+
+to allow unauthenticated hosts (the container) to connect. This can be undone afterwards with the same command but "-" instead of "+".
+
+For using  a Spyder option on Windows, things are a little more tricky (warning: untested!) and an Windows-ready X-server will need to be installed.
+
+### Updating
+At a terminal/command prompt, (may need sudo if Linux or Mac)
+
+```
+docker pull theogdoctorg/conda-meep
+```
 
 ## Details about Python packages & environments
 The image is based on the official Miniconda3 Docker image, and thus should the Python version should stay up-to-date in subsequent rebuilds (currently at 3.11). Two environments are created, "mp" and "pmp", following the official Conda installation instructions here: https://meep.readthedocs.io/en/latest/Installation/
